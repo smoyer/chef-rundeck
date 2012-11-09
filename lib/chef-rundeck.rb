@@ -25,6 +25,8 @@ class ChefRundeck < Sinatra::Base
 
   class << self
 
+    attr_accessor :ssh_port
+    attr_accessor :cloud_hostname
     attr_accessor :config_file
     attr_accessor :username
     attr_accessor :web_ui_url
@@ -85,8 +87,15 @@ class ChefRundeck < Sinatra::Base
     
     platform = node[:platform] ? node[:platform] : platform = 'unknown'
     platform_version = node[:platform_version] ? node[:platform_version] : 'unknown' 
-    fqdn = node[:fqdn] ? node[:fqdn] : node.name #Next best thing, 
+
+    if (! node[:cloud][:public_hostname].nil?) && ChefRundeck.cloud_hostname
+      fqdn = node[:cloud][:public_hostname]
+    else
+      fqdn = node[:fqdn] ? node[:fqdn] : node.name #Next best thing
+    end
     
+    fqdn += ":#{ChefRundeck.ssh_port}" if ChefRundeck.ssh_port.to_i != 22
+
     # Allow overriding the username on a per-node basis.
     username = ChefRundeck.username
     if node[:rundeck] && node[:rundeck].has_key?('username')

@@ -46,6 +46,20 @@ class ChefRundeckCLI
      :long => "--port PORT",
      :description => "The port to run on, default 9980",
      :default => 9980
+
+   option :ssh_port,
+     :short => "-s SSHPORT",
+     :long => "--ssh-port PORT",
+     :description => "The port that SSH on the Chef nodes runs on, defaults to 22",
+     :default => 22
+
+   option :cloud_hostname,
+     :short => "-l",
+     :long => "--use-cloud-hostname",
+     :description => "If running on a cloud platform (i.e. AWS EC2), use the cloud hostname of the instance for Rundeck connections",
+     :default => false,
+     :boolean => true
+
 end
 
 cli = ChefRundeckCLI.new
@@ -54,6 +68,8 @@ cli.parse_options
 ChefRundeck.config_file = cli.config[:config_file]
 ChefRundeck.username = cli.config[:username]
 ChefRundeck.web_ui_url = cli.config[:web_ui_url]
+ChefRundeck.ssh_port = cli.config[:ssh_port]
+ChefRundeck.cloud_hostname = cli.config[:cloud_hostname]
 ChefRundeck.configure
 
 ChefRundeck.run! :host => 'localhost', :port => cli.config[:port] 
