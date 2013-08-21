@@ -19,10 +19,11 @@ require 'chef'
 require 'chef/node'
 require 'chef/mixin/xml_escape'
 
-#Set the environment to production so that the server listens on all interfaces:
-set :environment, :production
 
 class ChefRundeck < Sinatra::Base
+
+  #Set the environment to production so that the server listens on all interfaces:
+  set :environment, :production
 
   include Chef::Mixin::XMLEscape
 
